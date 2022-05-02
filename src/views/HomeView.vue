@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h1>Pictures</h1>
+    <h1>Pictures Gallery</h1>
     <CardComponent/>
   </div>
 </template>

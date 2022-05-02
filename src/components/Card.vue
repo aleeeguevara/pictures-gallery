@@ -71,9 +71,8 @@ export default {
     box-sizing: border-box;
   }
   .filter{
-    width: 100%;
-    padding: 10px;
-    margin: 1rem;
+    width: 80%;
+    padding: .5rem 1rem;
     color: #fff;
   }
 </style>
