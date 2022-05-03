@@ -2,21 +2,45 @@
   <div class="panel">
     <h2 class="panel-title" @dblclick="visible = !visible">{{ title }}</h2>
     <transition  name="toggle-fade">
-      <div class="panel-content" v-show="visible">
+      <div
+        class="panel-content"
+        v-show="visible"
+        @click="showbtn = !showbtn"
+        @keypress="showbtn = !showbtn"
+      >
         <slot></slot>
+        <Btn-component
+          type="button"
+          label="Remove"
+          v-show="showbtn"
+          @btnActive="removePicture(title)"
+          :confirmation="false"
+          myStyle="danger"
+        />
       </div>
     </transition>
   </div>
 </template>
 
 <script>
+import BtnComponent from './Btn.vue';
+
 export default {
   name: 'PanelComponent',
   props: ['title'],
   data() {
     return {
       visible: true,
+      showbtn: false,
     };
+  },
+  components: {
+    BtnComponent,
+  },
+  methods: {
+    removePicture(id) {
+      alert(`this picture ${id}`);
+    },
   },
 };
 </script>
@@ -31,7 +55,6 @@ export default {
     vertical-align: top;
     text-align: center;
     width: 300px;
-    max-height: 250px;
   }
 
   .panel-title {

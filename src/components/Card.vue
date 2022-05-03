@@ -10,9 +10,11 @@
       >
     </label>
     <div id="containerCards">
-      <div class="card" v-for="image in FilterPics" :key="image.id">
-        <PanelComponent :title="image.author">
-            <Img-responsive :image="image.download_url" :title="image.author" />
+      <div class="card" v-for="(image, index) in FilterPics" :key="index">
+        <PanelComponent :title="image.titulo">
+            <Img-responsive
+              :image="image.url" :title="image.titulo"
+            />
         </PanelComponent>
       </div>
     </div>
@@ -33,7 +35,7 @@ export default {
   },
   methods: {
     async getPictures() {
-      const req = await this.$http.get('https://picsum.photos/v2/list', {
+      const req = await this.$http.get('http://localhost:3000/v1/fotos', {
         headers: {
           contentType: 'application/json',
         },
@@ -48,6 +50,7 @@ export default {
   components: {
     PanelComponent,
     ImgResponsive,
+
   },
   computed: {
 
@@ -68,11 +71,15 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+  }
+  #container {
     box-sizing: border-box;
+
   }
   .filter{
-    width: 80%;
+    width: 100%;
     padding: .5rem 1rem;
+    margin: 2rem;
     color: #fff;
   }
 </style>
