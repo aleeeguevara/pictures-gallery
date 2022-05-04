@@ -13,7 +13,7 @@
           type="button"
           label="Remove"
           v-show="showbtn"
-          @btnActive="removePicture(title)"
+          @btnActive="removePicture(id)"
           :confirmation="false"
           myStyle="danger"
         />
@@ -27,7 +27,7 @@ import BtnComponent from './Btn.vue';
 
 export default {
   name: 'PanelComponent',
-  props: ['title'],
+  props: ['title', 'id'],
   data() {
     return {
       visible: true,
@@ -43,6 +43,7 @@ export default {
         method: 'DELETE',
         Content: 'Application/Json',
       });
+      // falta reload na pagina após deletar
     },
   },
 };

@@ -1,5 +1,15 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <RegisterComponent />
   </div>
 </template>
+
+<script>
+import RegisterComponent from '../components/Register.vue';
+
+export default {
+  components: {
+    RegisterComponent,
+  },
+};
+</script>
