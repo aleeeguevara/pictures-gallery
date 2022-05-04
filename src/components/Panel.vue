@@ -38,8 +38,11 @@ export default {
     BtnComponent,
   },
   methods: {
-    removePicture(id) {
-      alert(`this picture ${id}`);
+    async removePicture(id) {
+      await this.$http.delete(`http://localhost:3000/v1/fotos/${id}`, {
+        method: 'DELETE',
+        Content: 'Application/Json',
+      });
     },
   },
 };

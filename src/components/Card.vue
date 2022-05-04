@@ -11,7 +11,7 @@
     </label>
     <div id="containerCards">
       <div class="card" v-for="(image, index) in FilterPics" :key="index">
-        <PanelComponent :title="image.titulo">
+        <PanelComponent :title="image.titulo" v-my-transform.animate='15'>
             <Img-responsive
               :image="image.url" :title="image.titulo"
             />
