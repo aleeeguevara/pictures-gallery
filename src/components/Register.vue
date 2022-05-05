@@ -2,16 +2,16 @@
   <div class="form">
     <h1 class="center">Register</h1>
 
-    <form @submit="createPicture()">
+    <form @submit.prevent="createPicture()">
       <div class="control">
         <label for="title">Title
-          <input id="title" autocomplete="off" @input="title = $event.target.value">
+          <input id="title" autocomplete="off" v-model.lazy="title">
         </label>
       </div>
 
       <div class="control">
         <label for="url">Url
-          <input id="url" autocomplete="off" @input="url = $event.target.value">
+          <input id="url" autocomplete="off" v-model.lazy="url">
         </label>
         <ImgResponsive v-show="url" :image="url" :title="title"/>
       </div>
@@ -19,17 +19,17 @@
       <div class="control">
         <label for="description">Description
           <textarea
-            @input="desc = $event.target.value"
             id="description"
             autocomplete="off"
+            v-model="desc"
           >
           </textarea>
         </label>
       </div>
 
       <div class="center buttons">
-        <Btncomponent label="Save" type="submit"/>
         <router-link to="/"><Btncomponent label="Return" type="button"/></router-link>
+        <Btncomponent label="Save" type="submit"/>
       </div>
 
     </form>
@@ -62,7 +62,16 @@ export default {
         descricao: this.desc,
       };
       if (this.title && this.url && this.desc) {
-        await this.$http.post('http://localhost:3000/v1/fotos', data);
+        try {
+          const req = await this.$http.post('http://localhost:3000/v1/fotos', data);
+          if (req.status === 200) {
+            this.title = '';
+            this.url = '';
+            this.desc = '';
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
     },
   },

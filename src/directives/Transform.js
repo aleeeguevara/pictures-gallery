@@ -16,7 +16,8 @@ Vue.directive('my-transform', {
           current += increment;
         }
         effect = `rotate(${current}deg)`;
-      } else if (binding.arg === 'scale' && current === 0) {
+      } else if (binding.arg === 'scale' && current <= 1) {
+        current = 0;
         current += increment;
         effect = `scale(${current})`;
       } else {
