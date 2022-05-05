@@ -13,7 +13,7 @@
           type="button"
           label="Remove"
           v-show="showbtn"
-          @btnActive="removePicture(id)"
+          @btnActive="handleClickDelete()"
           :confirmation="false"
           myStyle="danger"
         />
@@ -27,7 +27,7 @@ import BtnComponent from './Btn.vue';
 
 export default {
   name: 'PanelComponent',
-  props: ['title', 'id'],
+  props: ['title'],
   data() {
     return {
       visible: true,
@@ -38,14 +38,11 @@ export default {
     BtnComponent,
   },
   methods: {
-    async removePicture(id) {
-      await this.$http.delete(`http://localhost:3000/v1/fotos/${id}`, {
-        method: 'DELETE',
-        Content: 'Application/Json',
-      });
-      // falta reload na pagina após deletar
+    handleClickDelete() {
+      this.$emit('deleteClick');
     },
   },
+
 };
 </script>
 
@@ -70,7 +67,11 @@ export default {
     width: 100%;
     cursor: pointer;
   }
-
+  .message{
+    color: #fff;
+    display: flex;
+    justify-content: center;
+  }
   .toggle-fade-enter, .toggle-fade-leave-active {
     opacity: 0;
   }

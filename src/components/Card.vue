@@ -11,10 +11,16 @@
     </label>
     <div id="containerCards">
       <div class="card" v-for="(image, index) in FilterPics" :key="index">
-        <PanelComponent :title="image.titulo" :id="image._id"  v-my-transform:scale.animate='1.2'>
-            <Img-responsive
-              :image="image.url" :title="image.titulo"
-            />
+        <PanelComponent
+          :images="images"
+          :title="image.titulo"
+          :id="image._id"
+          v-my-transform:scale.animate='1.2'
+          @deleteClick="removePicture(image)"
+        >
+          <Img-responsive
+            :image="image.url" :title="image.titulo"
+          />
         </PanelComponent>
       </div>
     </div>
@@ -43,6 +49,20 @@ export default {
       const data = await req.json();
       this.images = data;
     },
+    async removePicture(image) {
+      try {
+        // eslint-disable-next-line no-underscore-dangle
+        const req = await this.$http.delete(`http://localhost:3000/v1/fotos/${image._id}`);
+        if (req.status === 200) {
+          this.message = 'Pictured removed successfully';
+          // eslint-disable-next-line no-underscore-dangle
+          const index = this.images.indexOf(image);
+          this.images.splice(index, 1);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
   created() {
     this.getPictures();
@@ -57,7 +77,7 @@ export default {
     FilterPics() {
       if (this.filter) {
         const exp = new RegExp(this.filter.trim(), 'i');
-        const data = this.images.filter((img) => exp.test(img.author));
+        const data = this.images.filter((img) => exp.test(img.titulo));
         return data;
       }
       return this.images;

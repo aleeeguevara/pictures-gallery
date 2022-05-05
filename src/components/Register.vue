@@ -5,15 +5,17 @@
     <form @submit.prevent="createPicture()">
       <div class="control">
         <label for="title">Title
-          <input id="title" autocomplete="off" v-model.lazy="title">
+          <input id="title" autocomplete="off" v-model.lazy="photo.titulo">
+          <p v-show="warn" class="warn">Please fill required field</p>
         </label>
       </div>
 
       <div class="control">
         <label for="url">Url
-          <input id="url" autocomplete="off" v-model.lazy="url">
+          <input id="url" autocomplete="off" v-model.lazy="photo.url">
+          <p v-show="warn" class="warn">Please fill required field</p>
         </label>
-        <ImgResponsive v-show="url" :image="url" :title="title"/>
+        <ImgResponsive v-show="photo.url" :image="photo.url" :title="photo.titulo"/>
       </div>
 
       <div class="control">
@@ -21,9 +23,10 @@
           <textarea
             id="description"
             autocomplete="off"
-            v-model="desc"
+            v-model="photo.descricao"
           >
           </textarea>
+           <p v-show="warn" class="warn">Please fill required field</p>
         </label>
       </div>
 
@@ -40,6 +43,7 @@
 
 import ImgResponsive from './ImgResponsive.vue';
 import Btncomponent from './Btn.vue';
+import Photo from '../domain/photo/Photo';
 
 export default {
   name: 'RegisterComponent',
@@ -49,29 +53,27 @@ export default {
   },
   data() {
     return {
-      title: '',
-      url: '',
-      desc: '',
+      photo: new Photo(),
+      warn: false,
     };
   },
   methods: {
     async createPicture() {
-      const data = {
-        titulo: this.title,
-        url: this.url,
-        descricao: this.desc,
-      };
-      if (this.title && this.url && this.desc) {
+      const data = this.photo;
+      console.log(data.url);
+      if (data.url && data.titulo && data.descricao) {
         try {
           const req = await this.$http.post('http://localhost:3000/v1/fotos', data);
+
           if (req.status === 200) {
-            this.title = '';
-            this.url = '';
-            this.desc = '';
+            this.photo = new Photo();
+            this.warn = false;
           }
         } catch (error) {
           console.log(error);
         }
+      } else {
+        this.warn = true;
       }
     },
   },
@@ -113,5 +115,10 @@ export default {
   .buttons {
     display: flex;
     justify-content: flex-end;
+  }
+
+  .warn {
+    color: firebrick;
+    font-size: 15px;
   }
 </style>
