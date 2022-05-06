@@ -9,14 +9,25 @@
         @keypress="showbtn = !showbtn"
       >
         <slot></slot>
-        <Btn-component
-          type="button"
-          label="Remove"
-          v-show="showbtn"
-          @btnActive="handleClickDelete()"
-          :confirmation="false"
-          myStyle="danger"
-        />
+        <div class="container-btn">
+          <router-link :to="{name: 'edit', params: { id } }">
+            <Btn-component
+              type="button"
+              label="Edit"
+              v-show="showbtn"
+              @btnActive="handleClickEdit()"
+              :confirmation="false"
+            />
+          </router-link>
+          <Btn-component
+            type="button"
+            label="Remove"
+            v-show="showbtn"
+            @btnActive="handleClickDelete()"
+            :confirmation="true"
+            myStyle="danger"
+          />
+        </div>
       </div>
     </transition>
   </div>
@@ -27,7 +38,7 @@ import BtnComponent from './Btn.vue';
 
 export default {
   name: 'PanelComponent',
-  props: ['title'],
+  props: ['title', 'id'],
   data() {
     return {
       visible: true,
@@ -40,6 +51,9 @@ export default {
   methods: {
     handleClickDelete() {
       this.$emit('deleteClick');
+    },
+    handleClickEdit() {
+      this.$emit('editClick');
     },
   },
 
@@ -66,6 +80,10 @@ export default {
     padding: 10px;
     width: 100%;
     cursor: pointer;
+  }
+  .container-btn {
+    display: flex;
+    justify-content: center;
   }
 
   .toggle-fade-enter, .toggle-fade-leave-active {
