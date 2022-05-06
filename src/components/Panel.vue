@@ -67,11 +67,7 @@ export default {
     width: 100%;
     cursor: pointer;
   }
-  .message{
-    color: #fff;
-    display: flex;
-    justify-content: center;
-  }
+
   .toggle-fade-enter, .toggle-fade-leave-active {
     opacity: 0;
   }

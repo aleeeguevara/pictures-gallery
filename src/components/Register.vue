@@ -31,7 +31,7 @@
       </div>
 
       <div class="center buttons">
-        <router-link to="/"><Btncomponent label="Return" type="button"/></router-link>
+        <router-link :to="{name: 'home'}"><Btncomponent label="Return" type="button"/></router-link>
         <Btncomponent label="Save" type="submit"/>
       </div>
 
@@ -44,6 +44,7 @@
 import ImgResponsive from './ImgResponsive.vue';
 import Btncomponent from './Btn.vue';
 import Photo from '../domain/photo/Photo';
+import FotoService from '../domain/photo/PhotoService';
 
 export default {
   name: 'RegisterComponent',
@@ -60,10 +61,9 @@ export default {
   methods: {
     async createPicture() {
       const data = this.photo;
-      console.log(data.url);
       if (data.url && data.titulo && data.descricao) {
         try {
-          const req = await this.$http.post('http://localhost:3000/v1/fotos', data);
+          const req = await this.service.register(data);
 
           if (req.status === 200) {
             this.photo = new Photo();
@@ -76,6 +76,9 @@ export default {
         this.warn = true;
       }
     },
+  },
+  created() {
+    this.service = new FotoService(this.$resource);
   },
 };
 

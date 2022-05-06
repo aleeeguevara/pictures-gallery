@@ -1,5 +1,6 @@
 <template>
   <div id="container">
+    <p class="message">{{ message }}</p>
    <label for="search">
       <input
         type="search"
@@ -30,6 +31,7 @@
 <script>
 import ImgResponsive from './ImgResponsive.vue';
 import PanelComponent from './Panel.vue';
+import PhotoService from '../domain/photo/PhotoService';
 
 export default {
   name: 'CardComponent',
@@ -37,35 +39,32 @@ export default {
     return {
       images: [],
       filter: '',
+      message: '',
     };
   },
   methods: {
-    async getPictures() {
-      const req = await this.$http.get('http://localhost:3000/v1/fotos', {
-        headers: {
-          contentType: 'application/json',
-        },
-      });
-      const data = await req.json();
-      this.images = data;
-    },
     async removePicture(image) {
       try {
         // eslint-disable-next-line no-underscore-dangle
-        const req = await this.$http.delete(`http://localhost:3000/v1/fotos/${image._id}`);
+        const req = await this.service.delete(image._id);
         if (req.status === 200) {
           this.message = 'Pictured removed successfully';
-          // eslint-disable-next-line no-underscore-dangle
           const index = this.images.indexOf(image);
           this.images.splice(index, 1);
+          this.message = '';
         }
       } catch (err) {
         console.log(err);
+        this.message = `Sorry, we were not able to delete the picture ${image.titulo}`;
       }
     },
   },
   created() {
-    this.getPictures();
+    this.service = new PhotoService(this.$resource);
+    (async () => {
+      const data = await this.service.list();
+      this.images = data;
+    })();
   },
   components: {
     PanelComponent,
@@ -101,5 +100,11 @@ export default {
     padding: .5rem 1rem;
     margin: 2rem;
     color: #fff;
+  }
+
+  .message{
+    color: #fff;
+    display: flex;
+    justify-content: center;
   }
 </style>

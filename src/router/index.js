@@ -9,6 +9,7 @@ export const routes = [
     path: '/',
     name: 'home',
     component: HomeView,
+    menu: true,
   },
   {
     path: '/register',
@@ -17,6 +18,12 @@ export const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/RegisterView.vue'),
+    menu: true,
+  },
+  {
+    path: '*',
+    component: HomeView,
+    menu: false,
   },
 ];
 

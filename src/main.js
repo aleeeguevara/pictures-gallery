@@ -7,6 +7,7 @@ import './directives/Transform';
 Vue.config.productionTip = false;
 
 Vue.use(VueResource);
+Vue.http.options.root = 'http://localhost:3000';
 new Vue({
   // vue instance com obj de configuracao
   router,
