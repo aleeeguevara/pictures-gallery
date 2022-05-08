@@ -5,18 +5,38 @@ export default class FotoService {
   }
 
   async list() {
-    const req = await this._resource.query();
-    const data = await req.json();
-    return data;
+    try {
+      const req = await this._resource.query();
+      const data = await req.json();
+      return data;
+    } catch (err) {
+      console.log(err);
+      throw new Error('Sorry, we are having some issues, try again later!');
+    }
   }
 
   async register(photo) {
+    if (photo._id) {
+      const req = await this._resource.update({ id: photo._id }, photo);
+      return req;
+    }
     const req = await this._resource.save(photo);
     return req;
   }
 
   async delete(id) {
-    const req = await this._resource.delete({ id });
-    return req;
+    try {
+      const req = await this._resource.delete({ id });
+      return req;
+    } catch (err) {
+      console.log(err);
+      throw new Error('Sorry, we were not able to delete the chosen picture');
+    }
+  }
+
+  async getDataById(id) {
+    const req = await this._resource.query({ id });
+    const data = await req.json();
+    return data;
   }
 }

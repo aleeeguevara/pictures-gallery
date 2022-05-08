@@ -1,19 +1,32 @@
 <template>
   <div class="form">
-    <h1 class="center">Register</h1>
+    <h1 class="center" v-if="!id">Register</h1>
+    <h1 class="center" v-else>Editing</h1>
 
     <form @submit.prevent="createPicture()">
       <div class="control">
         <label for="title">Title
-          <input id="title" autocomplete="off" v-model.lazy="photo.titulo">
-          <p v-show="warn" class="warn">Please fill required field</p>
+          <input
+            name="title"
+            v-validate data-vv-rules="required|min:3|max:30"
+            id="title"
+            autocomplete="off"
+            v-model="photo.titulo"
+          >
+          <p v-show="errors.has('title')" class="warn">{{ errors.first('title') }}</p>
         </label>
       </div>
 
       <div class="control">
         <label for="url">Url
-          <input id="url" autocomplete="off" v-model.lazy="photo.url">
-          <p v-show="warn" class="warn">Please fill required field</p>
+          <input
+            id="url"
+            name="url"
+            autocomplete="off"
+            v-model="photo.url"
+            v-validate data-vv-rules="required"
+          >
+          <p v-show="errors.has('url')" class="warn">{{ errors.first('url') }}</p>
         </label>
         <ImgResponsive v-show="photo.url" :image="photo.url" :title="photo.titulo"/>
       </div>
@@ -22,11 +35,13 @@
         <label for="description">Description
           <textarea
             id="description"
+            name="description"
             autocomplete="off"
             v-model="photo.descricao"
+            v-validate data-vv-rules="required"
           >
           </textarea>
-           <p v-show="warn" class="warn">Please fill required field</p>
+           <p v-show="errors.has('description')" class="warn">{{ errors.first('description') }}</p>
         </label>
       </div>
 
@@ -55,30 +70,36 @@ export default {
   data() {
     return {
       photo: new Photo(),
-      warn: false,
+      id: this.$route.params.id,
     };
   },
   methods: {
     async createPicture() {
-      const data = this.photo;
-      if (data.url && data.titulo && data.descricao) {
+      const valid = await this.$validator.validateAll();
+      if (valid) {
         try {
-          const req = await this.service.register(data);
+          const req = await this.service.register(this.photo);
 
           if (req.status === 200) {
+            if (this.id) this.$router.push({ name: 'home' });
             this.photo = new Photo();
-            this.warn = false;
           }
         } catch (error) {
           console.log(error);
         }
-      } else {
-        this.warn = true;
       }
     },
+
   },
   created() {
     this.service = new FotoService(this.$resource);
+
+    if (this.id) {
+      (async () => {
+        const data = await this.service.getDataById(this.id);
+        this.photo = data;
+      })();
+    }
   },
 };
 

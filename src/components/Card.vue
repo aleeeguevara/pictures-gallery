@@ -10,7 +10,7 @@
         @input="filter = $event.target.value"
       >
     </label>
-    <div id="containerCards">
+    <div id="containerCards" v-if="!error">
       <div class="card" v-for="(image, index) in FilterPics" :key="index">
         <PanelComponent
           :images="images"
@@ -25,6 +25,9 @@
         </PanelComponent>
       </div>
     </div>
+      <div v-else>
+        <h2 class="title-error">{{ error }}</h2>
+      </div>
   </div>
 </template>
 
@@ -40,6 +43,7 @@ export default {
       images: [],
       filter: '',
       message: '',
+      error: false,
     };
   },
   methods: {
@@ -54,16 +58,19 @@ export default {
           this.message = '';
         }
       } catch (err) {
-        console.log(err);
-        this.message = `Sorry, we were not able to delete the picture ${image.titulo}`;
+        this.message = err.message;
       }
     },
   },
   created() {
     this.service = new PhotoService(this.$resource);
     (async () => {
-      const data = await this.service.list();
-      this.images = data;
+      try {
+        const data = await this.service.list();
+        this.images = data;
+      } catch (err) {
+        this.error = err.message;
+      }
     })();
   },
   components: {
@@ -106,5 +113,9 @@ export default {
     color: #fff;
     display: flex;
     justify-content: center;
+  }
+
+  .title-error{
+    color: red;
   }
 </style>
